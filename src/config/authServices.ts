@@ -1,22 +1,27 @@
-import { signInWithPopup, signOut as firebaseSignOut } from "firebase/auth";
-import { provider } from "./firebase";
+import { 
+  GoogleAuthProvider, 
+  GithubAuthProvider,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  createUserWithEmailAndPassword,
+  signOut,
+  FacebookAuthProvider
+} from "firebase/auth/web-extension";
 import { auth } from "./firebase";
 
-export const signInWithGoogle = async () => {
-    try {
-        const result = await signInWithPopup(auth, provider);
-        return result.user;
-    } catch (error) {
-        console.error("Error signing in with Google:", error);
-        throw error;
-    }
-}
+const googleProvider = new GoogleAuthProvider();
+const facekbookProvider = new FacebookAuthProvider();
+const githubProvider = new GithubAuthProvider();
 
-export const signOutUser = async (): Promise<void> => {
-    try {
-        await firebaseSignOut(auth);
-    } catch (error) {
-        console.error("Error signing out:", error);
-        throw error;
-    }
-}
+export const signInWithGoogle = () => signInWithPopup(auth, googleProvider);
+export const signInWithFacebook = () => signInWithPopup(auth, facekbookProvider);
+export const signInWithGithub = () => signInWithPopup(auth, githubProvider);
+
+export const signInWithEmailPassword = ({email, password}: {email: string, password: string}) => 
+  signInWithEmailAndPassword(auth, email, password);
+
+export const signUpWithEmailPassword = ({email, password}: {email: string, password: string}) => 
+  createUserWithEmailAndPassword(auth, email, password);
+
+export const logout = () => signOut(auth);
+
